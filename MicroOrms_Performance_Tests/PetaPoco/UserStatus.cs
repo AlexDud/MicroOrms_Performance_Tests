@@ -1,4 +1,4 @@
-﻿namespace MicroOrms_Performance_Tests
+﻿namespace MicroOrms_Performance_Tests.PetaPoco
 {
     public enum UserStatus
     {

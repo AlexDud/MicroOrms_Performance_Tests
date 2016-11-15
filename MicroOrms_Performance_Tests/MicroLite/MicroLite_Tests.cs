@@ -1,38 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Threading.Tasks;
 using FluentAssertions;
 using MicroLite;
-using MicroLite.Configuration;
-using MicroLite.Listeners;
-using MicroLite.Mapping;
 using Ploeh.AutoFixture;
 using Xunit;
 
-namespace MicroOrms_Performance_Tests
+namespace MicroOrms_Performance_Tests.MicroLite
 {
-    public class GuidListener : IInsertListener
-    {
-        public void AfterInsert(object instance, object executeScalarResult)
-        {
-            return; // nothing to do
-        }
-
-        public void BeforeInsert(object instance)
-        {
-            var objectInfo = ObjectInfo.For(instance.GetType());
-
-            if (objectInfo.TableInfo.IdentifierStrategy == IdentifierStrategy.Assigned
-                && objectInfo.TableInfo.IdentifierColumn.PropertyInfo.PropertyType == typeof(Guid))
-            {
-                var identifier = Guid.NewGuid();
-
-                objectInfo.SetIdentifierValue(instance, identifier);
-            }
-        }
-    }
-
     public class MicroLiteTests
     {
         private readonly Fixture fixture;
@@ -41,20 +16,27 @@ namespace MicroOrms_Performance_Tests
         public MicroLiteTests()
         {
             fixture = new Fixture();
+            sessionFactory = MicroLiteSetup.GetSessionFactory();
+        }
 
-            Listener.InsertListener.Add(new GuidListener());
+        [Fact]
+        public async Task truncate_customers_table_performanse_tests()
+        {
+            int result;
 
-            Configure.Extensions()
-                .WithConventionBasedMapping(
-                    new ConventionMappingSettings
-                    {
-                        ResolveIdentifierStrategy = type => IdentifierStrategy.Assigned
-                    });
+            using (var session = sessionFactory.OpenAsyncSession())
+            {
+                using (var transaction = session.BeginTransaction())
+                {
+                    var query = new SqlQuery("TRUNCATE TABLE Customers");
 
-            sessionFactory = Configure
-                 .Fluently()
-                 .ForMsSql2012Connection("TestConnection")
-                 .CreateSessionFactory();
+                    result = await session.Advanced.ExecuteAsync(query);
+
+                    transaction.Commit();
+                }
+            }
+
+            result.Should().Be(-1);
         }
 
         [Fact]
@@ -87,17 +69,13 @@ namespace MicroOrms_Performance_Tests
             {
                 using (var transaction = session.BeginTransaction())
                 {
-                    //var query = new SqlQuery("SELECT [CustomerId], [Name], [Surname], [Phone], [Email], [Age], [DateOfBirth], [CustomerStatusId] FROM [Customers]");
-
-                    var query = new SqlQuery("SELECT * FROM [Customers]");
-
-                    customers = session.Fetch<Customer>(query);
+                    customers = session.Fetch<Customer>(new SqlQuery("SELECT * FROM [Customers]"));
 
                     transaction.Commit();
                 }
             }
 
-            var a = customers;
+            customers.Count.Should().BeGreaterThan(0);
         }
 
         [Fact]
@@ -140,26 +118,6 @@ namespace MicroOrms_Performance_Tests
             }
 
             deleted.Should().BeTrue();
-        }
-
-        [Fact]
-        public async Task truncate_customers_table_performanse_tests()
-        {
-            int result;
-
-            using (var session = sessionFactory.OpenAsyncSession())
-            {
-                using (var transaction = session.BeginTransaction())
-                {
-                    var query = new SqlQuery("TRUNCATE TABLE Customers");
-
-                    result = await session.Advanced.ExecuteAsync(query);
-
-                    transaction.Commit();
-                }
-            }
-
-            result.Should().Be(-1);
         }
     }
 }

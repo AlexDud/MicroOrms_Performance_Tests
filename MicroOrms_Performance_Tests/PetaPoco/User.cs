@@ -1,16 +1,18 @@
 ﻿using System;
+using PetaPoco;
 
-namespace MicroOrms_Performance_Tests
+namespace MicroOrms_Performance_Tests.PetaPoco
 {
-    public class Customer
+    [TableName("Users")]
+    public class User
     {
-        public Guid CustomerId { get; set; }
+        public Guid UserId { get; set; }
         public string Name { get; set; }
         public string Surname { get; set; }
         public string Email { get; set; }
         public string Phone { get; set; }
         public int? Age { get; set; }
         public DateTime? DateOfBirth { get; set; }
-        public CustomerStatus Status { get; set; }
+        public UserStatus UserStatus { get; set; }
     }
 }
