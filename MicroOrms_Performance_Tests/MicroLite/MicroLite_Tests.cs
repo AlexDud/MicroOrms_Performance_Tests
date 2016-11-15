@@ -40,36 +40,31 @@ namespace MicroOrms_Performance_Tests.MicroLite
         }
 
         [Fact]
-        public void insert_into_customers_table_performanse_tests()
+        public async Task insert_into_customers_table_tests()
         {
-            var performanceResult = PerformanceChecker.check_average_execution_time(async () =>
-            {
-                var customer = fixture.Create<Customer>();
+            var customer = fixture.Create<Customer>();
 
-                using (var session = sessionFactory.OpenAsyncSession())
-                {
-                    using (var transaction = session.BeginTransaction())
-                    {
-                        await session.InsertAsync(customer);
-
-                        transaction.Commit();
-                    }
-                }
-            });
-
-            performanceResult.Should().BeGreaterThan(0);
-        }
-
-        [Fact]
-        public void get_all_data_from_customers_table_performanse_tests()
-        {
-            IList<Customer> customers;
-
-            using (var session = sessionFactory.OpenSession())
+            using (var session = sessionFactory.OpenAsyncSession())
             {
                 using (var transaction = session.BeginTransaction())
                 {
-                    customers = session.Fetch<Customer>(new SqlQuery("SELECT * FROM [Customers]"));
+                    await session.InsertAsync(customer);
+
+                    transaction.Commit();
+                }
+            }
+        }
+
+        [Fact]
+        public async Task get_all_data_from_customers_table_tests()
+        {
+            IList<Customer> customers;
+
+            using (var session = sessionFactory.OpenAsyncReadOnlySession())
+            {
+                using (var transaction = session.BeginTransaction())
+                {
+                    customers = await session.FetchAsync<Customer>(new SqlQuery("SELECT TOP (100) * FROM [Customers]"));
 
                     transaction.Commit();
                 }
@@ -79,7 +74,7 @@ namespace MicroOrms_Performance_Tests.MicroLite
         }
 
         [Fact]
-        public async Task update_customers_table_performanse_tests()
+        public async Task update_customers_table_tests()
         {
             bool updated;
 
@@ -103,7 +98,7 @@ namespace MicroOrms_Performance_Tests.MicroLite
         }
 
         [Fact]
-        public async Task delete_from_customers_table_performanse_tests()
+        public async Task delete_from_customers_table_tests()
         {
             bool deleted;
 
