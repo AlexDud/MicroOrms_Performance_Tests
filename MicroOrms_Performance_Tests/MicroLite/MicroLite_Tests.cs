@@ -82,7 +82,7 @@ namespace MicroOrms_Performance_Tests.MicroLite
             {
                 using (var transaction = session.BeginTransaction())
                 {
-                    var customer = await session.SingleAsync<Customer>(new Guid("0AEFDBFD-222B-4798-89C2-0092D9CF778E"));
+                    var customer = await session.SingleAsync<Customer>(new Guid("0ec1fd41-8acf-4cab-aeff-021f29209c97"));
                     customer.Name = "Maxim";
                     customer.Phone = "1234567890";
                     customer.Age = 25;
@@ -106,7 +106,7 @@ namespace MicroOrms_Performance_Tests.MicroLite
             {
                 using (var transaction = session.BeginTransaction())
                 {
-                    deleted = await session.Advanced.DeleteAsync(typeof(Customer), new Guid("17975F2B-804B-486F-97BD-E568DF231E27"));
+                    deleted = await session.Advanced.DeleteAsync(typeof(Customer), new Guid("0ec1fd41-8acf-4cab-aeff-021f29209c97"));
 
                     transaction.Commit();
                 }

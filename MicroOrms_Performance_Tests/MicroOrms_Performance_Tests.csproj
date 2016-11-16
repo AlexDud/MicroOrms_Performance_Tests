@@ -189,7 +189,6 @@
       <DependentUpon>Database.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\PetaPoco.cs" />
-    <Compile Include="PerformanceChecker.cs" />
     <Compile Include="PetaPoco\PetaPocoSetup.cs" />
     <Compile Include="PetaPoco\PetaPoco_Tests.cs" />
     <Compile Include="Program.cs" />

@@ -37,7 +37,7 @@ namespace MicroOrms_Performance_Tests.PetaPoco
         [Fact]
         public void update_users_table_tests()
         {
-            var user = db.Single<User>(new Guid("AC26020A-3664-405E-BFF9-000BB896523A"));
+            var user = db.Single<User>(new Guid("1a96f313-610a-442c-bdba-cfc3b3a23770"));
             user.Name = "Randomich";
             user.Phone = "1234567890";
             user.Age = 25;

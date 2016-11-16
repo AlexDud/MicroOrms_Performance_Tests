@@ -29,7 +29,7 @@ namespace MicroOrms_Performance_Tests.BenchMarks
             {
                 using (var transaction = session.BeginTransaction())
                 {
-                    var result = await session.SingleAsync<Customer>(new Guid("0EC1FD41-8ACF-4CAB-AEFF-021F29209C97"));
+                    var result = await session.SingleAsync<Customer>(new Guid("0ec1fd41-8acf-4cab-aeff-021f29209c97"));
 
                     transaction.Commit();
                 }
@@ -39,7 +39,7 @@ namespace MicroOrms_Performance_Tests.BenchMarks
         [Benchmark]
         public void PP_FetchSingle()
         {
-            var results = db.Single<User>(new Guid("AC26020A-3664-405E-BFF9-000BB896523A"));
+            var results = db.Single<User>(new Guid("1a96f313-610a-442c-bdba-cfc3b3a23770"));
         }
     }
 }
