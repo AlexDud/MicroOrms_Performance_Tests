@@ -172,9 +172,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BenchMarksConfig.cs" />
-    <Compile Include="BenchMarks\InsertBenchMarks.cs" />
-    <Compile Include="BenchMarks\SelectBenchMarks.cs" />
-    <Compile Include="BenchMarks\UpdateBenchMarks.cs" />
+    <Compile Include="BenchMarks\FetchSingleBenchmark.cs" />
+    <Compile Include="BenchMarks\InsertBenchmark.cs" />
+    <Compile Include="BenchMarks\PaginationBenchmark.cs" />
+    <Compile Include="BenchMarks\SelectBenchmark.cs" />
+    <Compile Include="BenchMarks\TakeSkipBenchmarks.cs" />
+    <Compile Include="BenchMarks\UpdateBenchmark.cs" />
     <Compile Include="MicroLite\Customer.cs" />
     <Compile Include="MicroLite\CustomerStatus.cs" />
     <Compile Include="MicroLite\GuidListener.cs" />

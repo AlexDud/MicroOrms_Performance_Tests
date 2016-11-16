@@ -8,9 +8,12 @@ namespace MicroOrms_Performance_Tests
     {
         public static void Main(string[] args)
         {
-            //BenchmarkRunner.Run<InsertBenchMarks>();
-            //BenchmarkRunner.Run<UpdateBenchMarks>();
-            BenchmarkRunner.Run<SelectBenchMarks>();
+            //BenchmarkRunner.Run<InsertBenchmark>();
+            //BenchmarkRunner.Run<UpdateBenchmark>();
+            //BenchmarkRunner.Run<SelectBenchmark>();
+            //BenchmarkRunner.Run<TakeSkipBenchmark>();
+            //BenchmarkRunner.Run<PaginationBenchmark>();
+            BenchmarkRunner.Run<FetchSingleBenchmark>();
 
             Console.ReadKey();
         }

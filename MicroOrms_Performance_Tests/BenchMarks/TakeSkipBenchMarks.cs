@@ -5,36 +5,32 @@ using MicroLite;
 using MicroOrms_Performance_Tests.MicroLite;
 using MicroOrms_Performance_Tests.PetaPoco;
 using PetaPoco;
-using Ploeh.AutoFixture;
 
 namespace MicroOrms_Performance_Tests.BenchMarks
 {
     [MinColumn, MaxColumn]
     [Config(typeof(BenchMarksConfig))]
-    public class InsertBenchMarks
+    public class TakeSkipBenchmarks
     {
-        private readonly Fixture fixture;
         private readonly ISessionFactory sessionFactory;
         private readonly IDatabase db;
 
-        public InsertBenchMarks()
+        public TakeSkipBenchmarks()
         {
-            fixture = new Fixture();
-
             sessionFactory = MicroLiteSetup.GetSessionFactory();
             db = PetaPocoSetup.GetDb();
         }
 
         [Benchmark]
-        public async Task ML_InsertData()
+        public async Task ML_TakeSkip()
         {
-            var customer = fixture.Create<Customer>();
-
             using (var session = sessionFactory.OpenAsyncSession())
             {
                 using (var transaction = session.BeginTransaction())
                 {
-                    await session.InsertAsync(customer);
+                    var query = new SqlQuery("SELECT * FROM [Customers]");
+
+                    var result = await session.PagedAsync<Customer>(query, PagingOptions.SkipTake(50, 100));
 
                     transaction.Commit();
                 }
@@ -42,11 +38,9 @@ namespace MicroOrms_Performance_Tests.BenchMarks
         }
 
         [Benchmark]
-        public void PP_InsertData()
+        public void PP_TakeSkip()
         {
-            var user = fixture.Create<User>();
-
-            db.Insert(user);
+            var results = db.SkipTake<User>(50, 100, new Sql("SELECT * FROM [Users]"));
         }
     }
 }

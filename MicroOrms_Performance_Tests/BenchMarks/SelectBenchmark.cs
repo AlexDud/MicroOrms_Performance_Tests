@@ -10,12 +10,12 @@ namespace MicroOrms_Performance_Tests.BenchMarks
 {
     [MinColumn, MaxColumn]
     [Config(typeof(BenchMarksConfig))]
-    public class SelectBenchMarks
+    public class SelectBenchmark
     {
         private readonly ISessionFactory sessionFactory;
         private readonly IDatabase db;
 
-        public SelectBenchMarks()
+        public SelectBenchmark()
         {
             sessionFactory = MicroLiteSetup.GetSessionFactory();
             db = PetaPocoSetup.GetDb();

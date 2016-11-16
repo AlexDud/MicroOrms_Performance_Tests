@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Attributes.Columns;
 using MicroLite;
@@ -11,31 +10,27 @@ namespace MicroOrms_Performance_Tests.BenchMarks
 {
     [MinColumn, MaxColumn]
     [Config(typeof(BenchMarksConfig))]
-    public class UpdateBenchMarks
+    public class PaginationBenchmark
     {
         private readonly ISessionFactory sessionFactory;
         private readonly IDatabase db;
 
-        public UpdateBenchMarks()
+        public PaginationBenchmark()
         {
             sessionFactory = MicroLiteSetup.GetSessionFactory();
             db = PetaPocoSetup.GetDb();
         }
 
         [Benchmark]
-        public async Task ML_UpdateData()
+        public async Task ML_Pagination()
         {
             using (var session = sessionFactory.OpenAsyncSession())
             {
                 using (var transaction = session.BeginTransaction())
                 {
-                    var customer = await session.SingleAsync<Customer>(new Guid("0EC1FD41-8ACF-4CAB-AEFF-021F29209C97"));
-                    customer.Name = "Randomich12";
-                    customer.Phone = "1234567890";
-                    customer.Age = 25;
-                    customer.Status = CustomerStatus.Closed;
+                    var query = new SqlQuery("SELECT * FROM [Customers]");
 
-                    var updated = await session.UpdateAsync(customer);
+                    var result = await session.PagedAsync<Customer>(query, PagingOptions.ForPage(1, 100));
 
                     transaction.Commit();
                 }
@@ -43,15 +38,9 @@ namespace MicroOrms_Performance_Tests.BenchMarks
         }
 
         [Benchmark]
-        public void PP_UpdateData()
+        public void PP_Pagination()
         {
-            var user = db.Single<User>(new Guid("AC26020A-3664-405E-BFF9-000BB896523A"));
-            user.Name = "Randomich12";
-            user.Phone = "1234567890";
-            user.Age = 25;
-            user.UserStatus = UserStatus.Updated;
-
-            db.Update(user);
+            var results = db.Page<User>(1, 100, new Sql("SELECT * FROM [Users]"));
         }
     }
 }
